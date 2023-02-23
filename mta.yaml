@@ -1,0 +1,94 @@
+_schema-version: "3.2"
+ID: cisuseronboardingrvp
+description: RVP User On Boarding Fiori application.
+version: 0.0.1
+modules:
+- name: cisuseronboardingrvp-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: cisuseronboardingrvp-destination-service
+    parameters:
+      content-target: true
+  - name: cisuseronboardingrvp-repo-host
+    parameters:
+      service-key:
+        name: cisuseronboardingrvp-repo-host-key
+  - name: cisuseronboardingrvp-uaa
+    parameters:
+      service-key:
+        name: cisuseronboardingrvp-uaa-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: cisuseronboardingrvp_html_repo_host
+          ServiceInstanceName: cisuseronboardingrvp-html5-srv
+          ServiceKeyName: cisuseronboardingrvp-repo-host-key
+          sap.cloud.service: cisuseronboardingrvp
+        - Authentication: OAuth2UserTokenExchange
+          Name: cisuseronboardingrvp_uaa
+          ServiceInstanceName: cisuseronboardingrvp-xsuaa-srv
+          ServiceKeyName: cisuseronboardingrvp-uaa-key
+          sap.cloud.service: cisuseronboardingrvp
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: cisuseronboardingrvp-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: cisuseronboardingrvp-repo-host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - cisuseronboardingrvp.zip
+      name: cisuseronboardingrvp
+      target-path: resources/
+- name: cisuseronboardingrvp
+  type: html5
+  path: .
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: cisuseronboardingrvp-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: cisuseronboardingrvp-destination-service
+    service-plan: lite
+- name: cisuseronboardingrvp-uaa
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: cisuseronboardingrvp-xsuaa-srv
+    service-plan: application
+- name: cisuseronboardingrvp-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: cisuseronboardingrvp-html5-srv
+    service-plan: app-host
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true

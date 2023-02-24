@@ -352,7 +352,10 @@ sap.ui.define([
             var oViewModel = this.getModel("listView");
             oViewModel.setProperty("/isFilterBarVisible", (this._oListFilterState.aFilter.length > 0));
             oViewModel.setProperty("/filterBarLabel", this.getResourceBundle().getText("listFilterBarText", [sFilterBarText]));
-        }
+        },
+        onOpenCreateNewProfileGroup: function(){
+            this.getRouter().navTo("createProfileGroup");
+        },
 
     });
 

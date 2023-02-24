@@ -154,10 +154,10 @@ sap.ui.define([
 
         _onMetadataLoaded: function () {
             // Store original busy indicator delay for the detail view
-            var iOriginalViewBusyDelay = this.getView().getBusyIndicatorDelay(),
+            // var iOriginalViewBusyDelay = this.getView().getBusyIndicatorDelay(),
                 oViewModel = this.getModel("detailView"),
                 oLineItemTable = this.byId("lineItemsList"),
-                iOriginalLineItemTableBusyDelay = oLineItemTable.getBusyIndicatorDelay();
+                // iOriginalLineItemTableBusyDelay = oLineItemTable.getBusyIndicatorDelay();
 
             // Make sure busy indicator is displayed immediately when
             // detail view is displayed for the first time
@@ -181,7 +181,7 @@ sap.ui.define([
         onCloseDetailPress: function () {
             this.getModel("appView").setProperty("/actionButtonsInfo/midColumn/fullScreen", false);
             // No item should be selected on list after detail page is closed
-            this.getOwnerComponent().oListSelector.clearListListSelection();
+            this.getOwnerComponent().oListSelector.clearMasterListSelection();
             this.getRouter().navTo("list");
         },
 

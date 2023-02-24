@@ -1,26 +1,121 @@
-<mvc:View
-    controllerName="cis.useronboardingrvp.controller.List"
-    xmlns="sap.m"
-    xmlns:semantic="sap.f.semantic"
-    xmlns:mvc="sap.ui.core.mvc">
-
-    <semantic:SemanticPage
-        id="listPage"
-        preserveHeaderStateOnScroll="true"
-        toggleHeaderOnTitleClick="false">
-        <semantic:titleHeading>
+<mvc:View controllerName="cis.useronboardingrvp.controller.List" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:semantic="sap.f.semantic" xmlns:f="sap.f" xmlns:fb="sap.ui.comp.filterbar" xmlns:mvc="sap.ui.core.mvc">
+    <semantic:SemanticPage id="listPage" preserveHeaderStateOnScroll="true" toggleHeaderOnTitleClick="false">
+        <!-- <semantic:titleHeading>
             <Title
                 id="listPageTitle"
                 text="{listView>/title}"
                 level="H2"/>
-        </semantic:titleHeading>
+        </semantic:titleHeading> -->
         <semantic:content>
-            <!-- For client side filtering add this to the items attribute: parameters: {operationMode: 'Client'}}" -->
-            <List
-                id="list"
-                width="auto"
-                class="sapFDynamicPageAlignContent"
-                items="{
+            <IconTabBar id="iconTabBar" class="sapUiResponsiveContentPadding">
+                <items>
+                    <IconTabFilter text="Vendor">
+                        <fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search=".onSearch" filterChange=".onFilterChange" afterVariantLoad=".onAfterVariantLoad" class="sapUiSmallMarginBottom">
+                            <fb:filterItems>
+                                <fb:FilterItem name="Vendors" label="Vendors">
+                                    <fb:control>
+                                        <MultiComboBox name="Vendors" selectionChange=".onSelectionChange" items="{
+												path: '/ProductNames',
+												templateShareable: true
+											}">
+                                            <core:Item key="{key}" text="{name}" />
+                                        </MultiComboBox>
+                                    </fb:control>
+                                </fb:FilterItem>
+                                <fb:FilterItem name="VendorType" label="Vendor Type">
+                                    <fb:control>
+                                        <MultiComboBox name="VendorType" selectionChange=".onSelectionChange" items="{
+												path: '/ProductNames',
+												templateShareable: true
+											}">
+                                            <core:Item key="{key}" text="{name}" />
+                                        </MultiComboBox>
+                                    </fb:control>
+                                </fb:FilterItem>
+                                <fb:FilterItem name="Status" label="Status">
+                                    <fb:control>
+                                        <MultiComboBox name="Status" selectionChange=".onSelectionChange" items="{
+												path: '/ProductNames',
+												templateShareable: true
+											}">
+                                            <core:Item key="{key}" text="{name}" />
+                                        </MultiComboBox>
+                                    </fb:control>
+                                </fb:FilterItem>
+                            </fb:filterItems>
+                        </fb:FilterBar>
+                        <!-- For client side filtering add this to the items attribute: parameters: {operationMode: 'Client'}}" -->
+
+                        <Table id="list" mode="MultiSelect" inset="false" sticky="ColumnHeaders" growing="true" growingScrollToLoad="true" items="{
+										path: '/ProductCollection',
+										sorter: {
+											path: 'Name'
+										}
+									}" class="sapUiSmallNegativeMarginBeginEnd" width="auto">
+                            <headerToolbar>
+                                <OverflowToolbar>
+                                    <ToolbarSpacer />
+                                    <Link text="Update Vendor Status" />
+                                    <ToolbarSeparator />
+                                    <Link text="Remind Users" />
+                                    <Link text="Invite Users" class="sapUiTinyMarginBegin" />
+                                    <ToolbarSeparator />
+                                    <Link text="Remove Profiles" />
+                                    <Link text="AssignProfiles" class="sapUiTinyMarginBegin" />
+                                    <ToolbarSeparator />
+                                    <Button id="filterButton" press=".onOpenViewSettings" icon="sap-icon://filter" type="Transparent" />
+                                    <Button id="sortButton" press=".onOpenViewSettings" icon="sap-icon://sort" type="Transparent" />
+                                    <Button id="excelExportButton" press=".onOpenViewSettings" icon="sap-icon://excel-attachment" type="Transparent" />
+                                    <Button id="groupButton" press=".onOpenViewSettings" icon="sap-icon://action-settings" type="Transparent" />
+                                    <Button id="addVendorButton" press=".onOpenViewAddVendors" text="Add Vendors" type="Emphasized" />
+                                </OverflowToolbar>
+                            </headerToolbar>
+                            <columns>
+                                <Column width="12em">
+                                    <Text text="Vendor" />
+                                </Column>
+                                <Column>
+                                    <Text text="Vendor Type" />
+                                </Column>
+                                <Column>
+                                    <Text text="Profiles" />
+                                </Column>
+                                <Column>
+                                    <HBox>
+                                        <Text text="Status" class="sapUiTinyMarginTop" />
+                                        <Button icon="sap-icon://sys-help" tooltip="Yet to add" />
+                                    </HBox>
+                                </Column>
+                                <Column>
+                                    <HBox>
+                                        <Text text="Last Accessed" class="sapUiTinyMarginTop" />
+                                        <Button icon="sap-icon://sys-help" tooltip="Yet to add" />
+                                    </HBox>
+                                </Column>
+                                <Column>
+                                    <Text text="Used By Status" />
+                                </Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem type="Navigation">
+                                    <cells>
+                                        <ObjectIdentifier title="{Name}" text="{ProductId}" />
+                                        <Text text="{SupplierName}" />
+                                        <Text text="{Width} x {Depth} x {Height} {DimUnit}" />
+                                        <ObjectNumber number="{
+													parts:[{path:'Price'},{path:'CurrencyCode'}],
+													type: 'sap.ui.model.type.Currency',
+													formatOptions: {showMeasure: false}
+												}" unit="{CurrencyCode}" />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                        <!-- <List
+                            id="list"
+                            width="auto"
+                            class="sapFDynamicPageAlignContent"
+                            items="{
                     path: '/Products',
                     sorter: {
                         path: 'SupplierID',
@@ -28,75 +123,156 @@
                     },
                     groupHeaderFactory: '.createGroupHeader'
                 }"
-                busyIndicatorDelay="{listView>/delay}"
-                noDataText="{listView>/noDataText}"
-                mode="{= ${device>/system/phone} ? 'None' : 'SingleSelectMaster'}"
-                growing="true"
-                growingScrollToLoad="true"
-                updateFinished=".onUpdateFinished"
-                selectionChange=".onSelectionChange">
+                            busyIndicatorDelay="{listView>/delay}"
+                            noDataText="{listView>/noDataText}"
+                            mode="{= ${device>/system/phone} ? 'None' : 'SingleSelectMaster'}"
+                            growing="true"
+                            growingScrollToLoad="true"
+                            updateFinished=".onUpdateFinished"
+                            selectionChange=".onSelectionChange"
+                        > -->
+                        <!-- <infoToolbar>
+                                <Toolbar active="true" id="filterBar" visible="{listView>/isFilterBarVisible}" press=".onOpenViewSettings">
+                                    <Title id="filterBarLabel" text="{listView>/filterBarLabel}" level="H3" />
+                                </Toolbar>
+                            </infoToolbar> -->
 
-                <infoToolbar>
-                    <Toolbar
-                        active="true"
-                        id="filterBar"
-                        visible="{listView>/isFilterBarVisible}"
-                        press=".onOpenViewSettings">
-                        <Title
-                            id="filterBarLabel"
-                            text="{listView>/filterBarLabel}"
-                            level="H3"/>
-                    </Toolbar>
-                </infoToolbar>
-
-                <headerToolbar>
-                    <OverflowToolbar>
-                        <SearchField
-                            id="searchField"
-                            showRefreshButton="true"
-                            tooltip="{i18n>listSearchTooltip}"
-                            search=".onSearch"
-                            width="auto">
-                            <layoutData>
-                                <OverflowToolbarLayoutData
-                                    minWidth="150px"
-                                    maxWidth="240px"
-                                    shrinkable="true"
-                                    priority="NeverOverflow"/>
-                            </layoutData>
-                        </SearchField>
-                        <ToolbarSpacer/>
-                        <Button
-                            id="sortButton"
-                            press=".onOpenViewSettings"
-                            icon="sap-icon://sort"
-                            type="Transparent"/>
-
-                        <Button
-                            id="filterButton"
-                            press=".onOpenViewSettings"
-                            icon="sap-icon://filter"
-                            type="Transparent"/>
-                        <Button
-                            id="groupButton"
-                            press=".onOpenViewSettings"
-                            icon="sap-icon://group-2"
-                            type="Transparent"/>
-
-                    </OverflowToolbar>
-                </headerToolbar>
-                <items>
-                    <ObjectListItem
-                        type="Navigation"
-                        press=".onSelectionChange"
-                        title="{SupplierID}"
-                        number="{
+                        <!-- <headerToolbar>
+                                <OverflowToolbar> -->
+                        <!-- <SearchField id="searchField" showRefreshButton="true" tooltip="{i18n>listSearchTooltip}" search=".onSearch" width="auto">
+                                        <layoutData>
+                                            <OverflowToolbarLayoutData minWidth="150px" maxWidth="240px" shrinkable="true" priority="NeverOverflow" />
+                                        </layoutData>
+                                    </SearchField> -->
+                        <!-- <ToolbarSpacer />
+                                    <Link text="Update Vendor Status"/>
+                                    <ToolbarSeparator />
+                                    <Link text="Remind Users"/>
+                                    <Link text="Invite Users" class="sapUiTinyMarginBegin"/>
+                                    <ToolbarSeparator />
+                                    <Link text="Remove Profiles"/>
+                                    <Link text="AssignProfiles" class="sapUiTinyMarginBegin"/>
+                                    <ToolbarSeparator />
+                                    <Button id="filterButton" press=".onOpenViewSettings" icon="sap-icon://filter" type="Transparent" />
+                                    <Button id="sortButton" press=".onOpenViewSettings" icon="sap-icon://sort" type="Transparent" />
+                                    <Button id="excelExportButton" press=".onOpenViewSettings" icon="sap-icon://excel-attachment" type="Transparent" />
+                                    <Button id="groupButton" press=".onOpenViewSettings" icon="sap-icon://action-settings" type="Transparent" />
+                                    <Button id="addVendorButton" press=".onOpenViewAddVendors" text="Add Vendors" type="Emphasized" />
+                                </OverflowToolbar>
+                            </headerToolbar>
+                            <items>
+                                <ObjectListItem type="Navigation" press=".onSelectionChange" title="{SupplierID}" number="{
                             path: 'UnitPrice',
                             formatter: '.formatter.numberUnit'
-                        }"
-                        unit="{UnitsOnOrder}" />
+                        }" />
+                            </items>
+                        </List> -->
+                    </IconTabFilter>
+                    <IconTabFilter text="Profiles">
+                        <fb:FilterBar id="profileFilterbar" persistencyKey="myPersKey1" useToolbar="false" search=".onSearch" filterChange=".onFilterChange" afterVariantLoad=".onAfterVariantLoad" class="sapUiSmallMarginBottom">
+                            <fb:filterItems>
+                                <fb:FilterItem name="profile" label="Profile">
+                                    <fb:control>
+                                        <MultiComboBox name="profile" selectionChange=".onSelectionChange" items="{
+												path: '/ProductNames',
+												templateShareable: true
+											}">
+                                            <core:Item key="{key}" text="{name}" />
+                                        </MultiComboBox>
+                                    </fb:control>
+                                </fb:FilterItem>
+                                <fb:FilterItem name="profile Group" label="Profile Group">
+                                    <fb:control>
+                                        <!-- <MultiInput id="multiInput" name="profile Group" suggestionItems="{
+                                                path: '/ProductCollection', templateShareable: true
+                                                sorter: { path: 'Name' }
+                                            }" valueHelpRequest="handleValueHelp">
+                                            <core:Item key="{ProductId}" text="{Name}" />
+                                        </MultiInput> -->
+                                        <MultiInput name="profile Group" suggestionItems="{
+												path: '/ProductNames',
+												templateShareable: true
+											}"
+                                            valueHelpRequest="handleValueHelp">
+                                            <core:Item key="{key}" text="{name}" />
+                                        </MultiInput>
+                                    </fb:control>
+                                </fb:FilterItem>
+                                <fb:FilterItem name="Applications" label="Applications">
+                                    <fb:control>
+                                        <MultiInput name="Applications" suggestionItems="{
+												path: '/ProductNames',
+												templateShareable: true
+											}"
+                                            valueHelpRequest="handleValueHelp">
+                                            <core:Item key="{key}" text="{name}" />
+                                        </MultiInput>
+                                    </fb:control>
+                                </fb:FilterItem>
+                                <fb:FilterItem name="Vendor" label="Vendor">
+                                    <fb:control>
+                                        <MultiComboBox name="Vendor" selectionChange=".onSelectionChange" items="{
+												path: '/ProductNames',
+												templateShareable: true
+											}">
+                                            <core:Item key="{key}" text="{name}" />
+                                        </MultiComboBox>
+                                    </fb:control>
+                                </fb:FilterItem>
+                            </fb:filterItems>
+                        </fb:FilterBar>
+                        <!-- For client side filtering add this to the items attribute: parameters: {operationMode: 'Client'}}" -->
+
+                        <Table id="profileList" mode="MultiSelect" inset="false" sticky="ColumnHeaders" growing="true" growingScrollToLoad="true" items="{
+										path: '/ProductCollection',
+										sorter: {
+											path: 'Name'
+										}
+									}" class="sapUiSmallNegativeMarginBeginEnd" width="auto">
+                            <headerToolbar>
+                                <OverflowToolbar>
+                                    <ToolbarSpacer />
+                                    <Link text="Remove Vendor(s)" />
+
+                                    <Link text="Assign Vendor(s)" />
+                                    <Button id="createNewProfileGroup" press=".onOpenCreateNewProfileGroup" text="Create New Profile Group" type="Emphasized" />
+                                </OverflowToolbar>
+                            </headerToolbar>
+                            <columns>
+                                <Column width="12em" mergeDuplicates="true">
+                                    <Text text="Profile Group" />
+                                </Column>
+                                <Column>
+                                    <Text text="Profile" />
+                                </Column>
+                                <Column>
+                                    <Text text="Vendors" />
+                                </Column>
+                                <Column>
+                                    <Text text="Application Access" />
+                                </Column>
+                                <Column>
+                                    <Text text="Last Updated On" />
+                                </Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem type="Navigation">
+                                    <cells>
+                                        <ObjectIdentifier title="{Name}" text="{ProductId}" />
+                                        <Text text="{SupplierName}" />
+                                        <Text text="{Width} x {Depth} x {Height} {DimUnit}" />
+                                        <ObjectNumber number="{
+													parts:[{path:'Price'},{path:'CurrencyCode'}],
+													type: 'sap.ui.model.type.Currency',
+													formatOptions: {showMeasure: false}
+												}" unit="{CurrencyCode}" />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </IconTabFilter>
                 </items>
-            </List>
+            </IconTabBar>
         </semantic:content>
     </semantic:SemanticPage>
 </mvc:View>

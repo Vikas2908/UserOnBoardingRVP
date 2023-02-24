@@ -105,6 +105,14 @@
                         "list",
                         "object"
                     ]
+                },
+                {
+                    "pattern": "createProfileGroup",
+                    "name": "createProfileGroup",
+                    "target": [
+                        "list",
+                        "createProfileGroup"
+                    ]
                 }
             ],
             "targets": {
@@ -127,6 +135,10 @@
                 "notFound": {
                     "viewName": "NotFound",
                     "viewId": "notFound"
+                },
+                "createProfileGroup": {
+                    "viewName": "CreateProfileGroup",
+                    "viewId": "createProfileGroupPage"
                 }
             }
         },
